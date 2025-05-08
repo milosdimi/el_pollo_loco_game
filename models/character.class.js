@@ -37,9 +37,10 @@ class Character extends MovableObject {
 
             if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
                 this.moveRight();
+                this.otherDirection = false;
             }
             if (this.world.keyboard.LEFT && this.x > 0) {
-                this.x -= this.speed;
+                this.moveLeft();
                 this.otherDirection = true;
             }
             if (this.world.keyboard.UP && !this.isAboveGround()) {
@@ -66,5 +67,10 @@ class Character extends MovableObject {
         }, 50);
 
     }
+
+    //jump() {
+    //    this.speedY = 30; // Set speedY to a positive value to jump
+    //}
+
 
 }
