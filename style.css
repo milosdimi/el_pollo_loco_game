@@ -70,19 +70,6 @@ canvas {
 }
 
 #startImg {
-    width: 100%;
-    height: auto;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-.canvasMaxHeight {
-    height: 100vh !important;
-    width: auto !important;
-}
-
-.background-image {
     width: 720px;
     height: 480px;
     position: absolute;
@@ -91,6 +78,13 @@ canvas {
     align-items: center;
     transition: all 0.9s ease;
 }
+
+.canvasMaxHeight {
+    height: 100vh !important;
+    width: auto !important;
+}
+
+
 
 .startImgMobileHorizontal {
     height: 100vh;

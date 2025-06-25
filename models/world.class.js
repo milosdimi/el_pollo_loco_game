@@ -1,26 +1,22 @@
 class World {
     character = new Character();
     gameStarted = false;
-    checkIfLevel2 = checkIfLevel2;
-    level = level1;
     canvas;
     ctx;
     keyboard;
     gamePaused = false;
     camera_x = 0;
     statusBar = new StatusBar();
-
     throwableObjects = [];
-
     bottleOnFloor = [];
     collectedThrowableObjects = [];
     bottless = [];
     statusBarBottles = new StatusBarBottles();
     statusBarCoins = new StatusBarCoins();
     statusKilledEnemies = new StatusKilledEnemies();
-    bottleInAir = false;   // diese Variable gibt an, ob sich gerade eine Flasche in der Luft befindet. Diese Variable wird gebraucht, um in der Funktion "checkThrowObjects()" zu überprüfen, ob sich bereits eine Flasche in der Luft befindet, damit nicht mehrere Flaschen auf einmal geworfen werden können
+    bottleInAir = false;
     screens = new Screens();
-    indexOfCurrentEnemy;   // der Wert von 'movingObject' muss der Variablen 'indexOfCurrentEnemy' zugeordnet werden, damit wenn in der Klasse Character() abgefragt wird, ob es sich um eine Kollision handelt oder ob der Character von oben auf den Enemay springt, Werte für einen Enemy vorhanden sind, da es sonst zu einem Fehler kommt, wenn die Funktion ' isJumpingOnEnemy()' ausgeführt wird. 
+    indexOfCurrentEnemy;
     canCheckJumpingOnEnemy = true;
     canExecuteCollisionCheck = false;
     coin = [];
@@ -29,18 +25,72 @@ class World {
     isMuted = false;
     background_sound = new Audio('audio/background-music.mp3');
 
-    constructor(canvas, keyboard) {
+    constructor(canvas, keyboard, level, testIfLevel2) {
         this.keyboard = keyboard;
+        this.level = level;
+        this.checkIfLevel2 = testIfLevel2;
         this.ctx = canvas.getContext("2d");
         this.canvas = canvas;
-        this.draw();
         this.setWorld();
-
+        this.draw();
         this.runIntervals();
-        level.enemies[0].correctSpeedOfEachChicken();   //-- ruft diese Funktion hier beim Erzeugen des ersten Huhns auf, da man sie nicht in der Klasse "Chicken" aufrufen sollte, da sie hier über den Konstruktor aufgerufen werden würde, sodass sie bei jedem neu erzeugten Huhn aufgerufen werden würde und dies zu viel rechenarbeit führen würde
-        level.coins[0].correctPositionOfEachCoin();    //-- ruft diese Funktion hier beim Erzeugen des ersten Coins auf, da man sie nicht in der Klasse "Coin" aufrufen sollte, da sie hier über den Konstruktor aufgerufen werden würde, sodass sie bei jedem neu erzeugten Coin aufgerufen werden würde und dies zu viel rechenarbeit führen würde
-        level.bottleOnFloor[0].correctPositionOfEachBottle();
+        if (this.level && this.level.enemies && this.level.enemies[0]) {
+            this.level.enemies[0].correctSpeedOfEachChicken();
+        }
+        if (this.level && this.level.coins && this.level.coins[0]) {
+            this.level.coins[0].correctPositionOfEachCoin();
+        }
+        if (this.level && this.level.bottleOnFloor && this.level.bottleOnFloor[0]) {
+            this.level.bottleOnFloor[0].correctPositionOfEachBottle();
+        }
         this.adjustLevelEnd();
+    }
+
+    setWorld() {
+        this.character.world = this;
+        this.character.startAnimation();
+        this.screens.world = this;
+    }
+
+    addObjectsToMap(objects) {
+        if (objects && Array.isArray(objects)) {
+            objects.forEach(o => {
+                this.addToMap(o);
+            });
+        } else {
+            console.warn('Objects ist nicht definiert oder kein Array:', objects);
+        }
+    }
+
+    draw() {
+        if (!this.level) {
+            console.warn('Level ist nicht definiert');
+            return;
+        }
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.translate(this.camera_x, 0);
+        this.addObjectsToMap(this.level.backgroundObjects);
+        this.ctx.translate(-this.camera_x, 0);
+        this.addObjectsToMap(this.level.clouds);
+        this.addToMap(this.statusBar);
+        this.addToMap(this.statusBarBottles);
+        this.addToMap(this.statusBarCoins);
+        this.addToMap(this.statusKilledEnemies);
+        //this.setTextStyle();
+        //this.resetTextStyle();
+        this.ctx.fillText(`${this.killedEnemies}`, this.statusKilledEnemies.x + 15, this.statusKilledEnemies.y + 52);
+        this.addToMap(this.screens);
+        this.ctx.translate(this.camera_x, 0);
+        this.addToMap(this.character);
+        this.addObjectsToMap(this.level.enemies);
+        this.addObjectsToMap(this.level.bottleOnFloor);
+        this.addObjectsToMap(this.level.coins);
+        this.addObjectsToMap(this.collectedThrowableObjects);
+        this.ctx.translate(-this.camera_x, 0);
+        let self = this;
+        requestAnimationFrame(function () {
+            self.draw();
+        });
     }
 
     adjustLevelEnd() {
@@ -51,9 +101,7 @@ class World {
         }
     }
 
-    setWorld() {
-        this.character.world = this;
-    }
+
 
     runIntervals() {
         this.checkCollisions();
@@ -71,36 +119,9 @@ class World {
         this.checkForCollisionsWhithEnemies();
         this.checkIfCharacterJumpsOnEnemy();
         this.checkForCollisionsWhithThrowableObjects();
-        this.checkForCollisionsWhithCoins();
+       // this.checkForCollisionsWhithCoins();
     }
 
-    draw() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);  // cleared bzw. löscht den Inhalt des Canvas vor jedem neuen Zeichnen
-        this.ctx.translate(this.camera_x, 0);
-        this.addObjectsToMap(level.backgroundObjects);  // Background
-        this.ctx.translate(-this.camera_x, 0); // verschiebt die Kamera vor den Zeichnen der StatusBar zurück
-        this.addObjectsToMap(level.clouds);  // Clouds
-        this.addToMap(this.statusBar); // Status-Bar
-        this.addToMap(this.statusBarBottles); // Status-Bar-Bottles
-        this.addToMap(this.statusBarCoins); // Status-Bar-Coins
-        this.addToMap(this.statusKilledEnemies); // Status Killed Enemies
-        this.setTextStyle();  // diese Funktion stylt die Anzeige der Ziffer der gekillten Enemies
-        this.ctx.fillText(`${this.killedEnemies}`, this.statusKilledEnemies.x + 15, this.statusKilledEnemies.y + 52);   // diese Zeile zeichnet die Zahl der getöteten Enemies in das Canvas
-        this.resetTextStyle();  // diese Funktion setzt das Styling der Anzeige der gekillten Enemies zurück
-        this.addToMap(this.screens);
-        this.ctx.translate(this.camera_x, 0); // schiebt die Kamera nach den Zeichnen der StatusBar wieder nach vorne -> durch diese beiden Schritte läuft die StatusBar nicht aus den Bild, wenn der Character bewegt wird
-        this.addToMap(this.character);  // Character
-        this.addObjectsToMap(level.enemies);  // Enemies
-        this.addObjectsToMap(level.bottleOnFloor);  // Bottle on Floor ready to collect
-        this.addObjectsToMap(level.coins);  // Coins
-        this.addObjectsToMap(this.collectedThrowableObjects);
-        this.ctx.translate(-this.camera_x, 0);
-
-        let self = this;
-        requestAnimationFrame(function () {   // damit wird die draw()-Methode so oft aufgerufen, wie die Grafikkarte es hergibt
-            self.draw();
-        });
-    }
 
     checkForCollisionsWhithEnemies() {
         setInterval(() => {   // Checking for Collisions whith Enemies
@@ -126,28 +147,28 @@ class World {
     }
 
     checkForCollisionsWhithThrowableObjects() {
-        setInterval(() => {   // Checking for Collisions whith Bottles/ThrowableObjects
-            level.bottleOnFloor.forEach((bottleOnFloor, indexOfBottle) => {
+        setInterval(() => {
+            this.level.bottleOnFloor.forEach((bottleOnFloor, indexOfBottle) => {
                 if (this.character.isColliding(bottleOnFloor)) {
-                    level.collectedBottle = new ThrowableObject(-5000);
-                    this.collectedThrowableObjects.push(level.collectedBottle);
-                    level.bottleOnFloor.splice(indexOfBottle, 1);  // löscht die Flasche, mit der der Character kollidiert ist anhand ihres index
-                    this.statusBarBottles.collectedBottles++;  // erhöht den Wert der gesammelten Flaschen für die Bottle-Status-Bar
-                    this.statusBarBottles.setBottleNumber(this.statusBarBottles.collectedBottles);  // aktualisiert die Anzeige der Bottle-Status-Bar
+                    this.collectedThrowableObjects.push(new ThrowableObject(-5000));
+                    this.level.bottleOnFloor.splice(indexOfBottle, 1);
+                    this.statusBarBottles.collectedBottles++;
+                    this.statusBarBottles.setBottleNumber(this.statusBarBottles.collectedBottles);
                     this.character.bottleCollected_sound.play();
                 }
             });
         }, 200);
     }
 
-    checkForCollisionsWhithCoins() {
-        setInterval(() => {   // Checking for Collisions whith Coins
-            level.coins.forEach((coin, indexOfCoin) => {
-                if (this.character.isColliding(coin)) {
-                    level.coins.splice(indexOfCoin, 1);  // löscht die Flasche, mit der der Character kollidiert ist anhand ihres index
-                    this.statusBarCoins.collectedCoins++;  // erhöht den Wert der gesammelten Coins für die Coin-Status-Bar
-                    this.statusBarCoins.setCoinNumber(this.statusBarCoins.collectedCoins);  // aktualisiert die Anzeige der Bottle-Status-Bar
-                    this.character.coinCollected_sound.play();
+    checkForCollisionsWhithThrowableObjects() {
+        setInterval(() => {
+            this.level.bottleOnFloor.forEach((bottleOnFloor, indexOfBottle) => {
+                if (this.character.isColliding(bottleOnFloor)) {
+                    this.collectedThrowableObjects.push(new ThrowableObject(-5000));
+                    this.level.bottleOnFloor.splice(indexOfBottle, 1);
+                    this.statusBarBottles.collectedBottles++;
+                    this.statusBarBottles.setBottleNumber(this.statusBarBottles.collectedBottles);
+                    this.character.bottleCollected_sound.play();
                 }
             });
         }, 200);
@@ -196,11 +217,7 @@ class World {
         level.enemies.length = 0  //-- .length = 0 leert das Array
     }
 
-    addObjectsToMap(objects) {
-        objects.forEach(o => {
-            this.addToMap(o);
-        });
-    }
+
 
     addToMap(movingObject) {
         if (!movingObject) {

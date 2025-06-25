@@ -1,14 +1,11 @@
 class Screens extends DrawableObject {
-
     IMAGE_START = [
         'img/9_intro_outro_screens/start/startscreen_1.png',
     ];
 
-
     IMAGE_WON = [
         'img/9_intro_outro_screens/game_over/game over!.png',
     ];
-
 
     IMAGE_LOSS = [
         'img/9_intro_outro_screens/game_over/you lost.png',
@@ -25,14 +22,14 @@ class Screens extends DrawableObject {
 
     showScreen() {
         const interval = setInterval(() => {
-            if (world.character.energy == 0 && !world.gameOver) {
+            if (!this.world || !this.world.character) return;
+            if (this.world.character.energy == 0 && !this.world.gameOver) {
                 this.gameLost();
-                world.gameOver = true;
-            }
-            else if (level.enemies[level.enemies.length - 1].endbossLife <= 0) {
+                this.world.gameOver = true;
+            } else if (this.world.level.enemies[this.world.level.enemies.length - 1].endbossLife <= 0) {
                 setTimeout(() => {
                     this.gameWon();
-                    world.gameOver = true;
+                    this.world.gameOver = true;
                 }, 6000);
                 clearInterval(interval);
             }
@@ -40,19 +37,21 @@ class Screens extends DrawableObject {
     }
 
     gameLost() {
-        this.loadImage(this.IMAGE_LOSS);
+        this.loadImage(this.IMAGE_LOSS[0]);
         pauseGame();
         showLevelSelection();
-        world.background_sound.pause();
+        if (this.world) {
+            this.world.background_sound.pause();
+        }
     }
 
     gameWon() {
-        this.loadImage(this.IMAGE_WON);
+        this.loadImage(this.IMAGE_WON[0]);
         pauseGame();
         showLevelSelection();
-        world.background_sound.pause();
-        world.deleteAllEnemies();
+        if (this.world) {
+            this.world.background_sound.pause();
+            this.world.deleteAllEnemies();
+        }
     }
-
-
 }

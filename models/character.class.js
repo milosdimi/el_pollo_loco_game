@@ -85,15 +85,17 @@ class Character extends MovableObject {
 
     constructor() {
         super().loadImage("img/2_character_pepe/2_walk/W-21.png");
-
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_JUMPING);
         this.loadImages(this.IMAGES_DEAD);
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_IDLE);
         this.loadImages(this.IMAGES_LONGIDLE);
-        this.animate();
         this.applyGravity();
+    }
+
+    startAnimation() {
+        this.animate();
     }
 
     animate() {
@@ -104,24 +106,56 @@ class Character extends MovableObject {
 
     runMovementInterval() {
         setInterval(() => {
-            if (this.world.keyboard.RIGHT && this.x < level.level_end_x && this.world.gamePaused == false) {
+            if (!this.world) return;
+            if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x && !this.world.gamePaused) {
                 this.moveCharacterRight();
             }
-            //  Links
-            if (this.world.keyboard.LEFT && this.x > 100 && this.world.gamePaused == false) {
+            if (this.world.keyboard.LEFT && this.x > 100 && !this.world.gamePaused) {
                 this.moveCharacterLeft();
             }
-            // Springen
             if (this.world.keyboard.SPACE && !this.isAboveGround()) {
                 this.speedY = 30;
                 this.spinJump_sound.play();
             }
-            // Schlafen beenden
-            if (this.world.keyboard.SPACE || this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.letterD) {   // wenn irgendweine Taste gedrückt wird, wird der Idle-TimeOut zurückgesetzt und die üverprüfung, ob nichts gedrückt wird, beginnt von neuem
+            if (this.world.keyboard.SPACE || this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.letterD) {
                 this.resetIdleTimeout();
             }
-            this.world.camera_x = -this.x + 100;
+            if (this.world) {
+                this.world.camera_x = -this.x + 100;
+            }
         }, 1000 / 60);
+    }
+
+    runAnimationInterval() {
+        setInterval(() => {
+            if (!this.world) return;
+            if (!this.world.gamePaused) {
+                if (this.isDead()) {
+                    if (!this.imagesDeadPlayed) {
+                        this.playAnimation(this.IMAGES_DEAD);
+                    }
+                } else if (this.isHurt()) {
+                    this.playAnimation(this.IMAGES_HURT);
+                    this.hurt_sound.play();
+                } else if (this.isAboveGround()) {
+                    this.playAnimation(this.IMAGES_JUMPING);
+                } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+                    this.playAnimation(this.IMAGES_WALKING);
+                }
+            }
+        }, 50);
+    }
+
+    runIdleIntervall() {
+        this.idleIntervalID = setInterval(() => {
+            if (!this.world) return;
+            if (this.idleAnimation == false && !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.world.keyboard.SPACE && !this.world.keyboard.letterD) {
+                this.idle = true;
+                this.playIdleAnimation();
+                this.walking_sound.pause();
+                this.hurt_sound.pause();
+            }
+        }, 100);
     }
 
     moveCharacterRight() {
@@ -148,41 +182,6 @@ class Character extends MovableObject {
         }
     }
 
-    runAnimationInterval() {
-        setInterval(() => {  // Dieses Intervall ruft die Animation/Abfolge der Bilder, die den Eindruck einer Bewegung des Character entstehen lässt, 20 mal pro sekunde auf
-            if (this.world.gamePaused == false) {
-                if (this.isDead()) { //-- if the character is dead
-                    if (this.imagesDeadPlayed === false) {
-                        this.playAnimation(this.IMAGES_DEAD);
-                    }
-
-                } else if (this.isHurt()) { //-- if the character is hurt
-                    this.playAnimation(this.IMAGES_HURT);
-                    this.hurt_sound.play();
-                }
-                // Jump-Animation
-                else if (this.isAboveGround()) {
-                    this.playAnimation(this.IMAGES_JUMPING);
-                }
-                if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {  // "||" ist ein logisches "oder" und hei?t, dass der Code in den geschweiften Klammern entweder ausgeführt wird, wenn die rechts- oder die links-Taste gedrückt wurde
-
-                    // Walk-Animation
-                    this.playAnimation(this.IMAGES_WALKING);
-                }
-            }
-        }, 50);
-    }
-
-    runIdleIntervall() {
-        this.idleIntervalID = setInterval(() => {
-            if (this.idleAnimation == false && !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && !this.world.keyboard.SPACE && !this.world.keyboard.letterD) {    // prüft, ob keine des Characters geschieht (bwz. ob KEINE Taste gedrückt wurde). Die Bedingung "this.idleAnimation == false" sorgt dafür, dass die Funktion "this.playIdleAnimation();" nur einmal und nicht mehrfach aufgerufen wird, da sonst die erhöhung des "counter" exponentiell ansteigt/zunimmt!
-                this.idle = true;
-                this.playIdleAnimation();  // spielt die Animation ab, wenn der Character nicht bewegt wird
-                this.walking_sound.pause();
-                this.hurt_sound.pause();
-            }
-        }, 100);
-    }
 
     playIdleAnimation() {   // spielt die Animation ab, wenn der Character nnicht bewegt wird
         this.idleAnimation = true;  // gibt an, ob playIdleAnimation() ausgeführt wird

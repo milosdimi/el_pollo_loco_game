@@ -8,17 +8,16 @@ let gamePaused = false;
 let mobileWindow;
 let deviceVertical;
 let showMobileAboutMenuVar = false;  // diese Variable wird benötigt, um den Toggle-Button des Hamburger-Menus bzw. das "X" zum Schließen in der Funktion "showMobileAboutMenu()" zu regeln
-let checkIfLevel2 = false;
+let testIfLevel2 = false;
 let deviceWasTurned = false;
 let buttonBoardShown = true;
 
 function init() {
+    shrinkStartImage(); // Hinzufügen
     bindBtnsPressEvents();
     fullScreenMobile();
-
     const urlParams = new URLSearchParams(window.location.search);
-    const level = urlParams.get('level') || '1'; // Standardmäßig Level 1
-
+    const level = urlParams.get('level') || '1';
     if (level === '2') {
         startLevel2();
     } else {
@@ -28,11 +27,30 @@ function init() {
 
 function startLevel1() {
     level = level1;
+    testIfLevel2 = false; // Setze für Level 1
 }
 
 function startLevel2() {
-    level = level2; // Zeile 35
-    testIfLevel2 = true;
+    level = level2;
+    testIfLevel2 = true; // Setze für Level 2
+}
+
+function startCanvas() {
+    console.log('startCanvas aufgerufen, level:', level);
+    if (!level) {
+        console.error('Level ist nicht definiert!');
+        return;
+    }
+    canvas = document.getElementById('canvas');
+    world = new World(canvas, keyboard, level, testIfLevel2);
+}
+
+function shrinkStartImage() {
+    console.log('shrinkStartImage aufgerufen');
+    setTimeout(() => {
+        console.log('Entferne d-none von startGameBtn');
+        document.getElementById('startGameBtn').classList.remove('d-none');
+    }, 500); // 0,5 Sekunden für schnelleres Testen
 }
 
 function showLevelSelection() {
@@ -140,10 +158,6 @@ function showMutedImg() {
     document.getElementById('soundOnImg').classList.add('d-none');
 }
 
-function startCanvas() {
-    canvas = document.getElementById('canvas');
-    world = new World(canvas, keyboard);
-}
 
 function pauseGame() {
     if (mobileWindow == false) {
