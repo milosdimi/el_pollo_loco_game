@@ -69,6 +69,14 @@ canvas {
     display: block;
 }
 
+#startImg {
+    width: 100%;
+    height: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
 .canvasMaxHeight {
     height: 100vh !important;
     width: auto !important;

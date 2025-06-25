@@ -35,11 +35,13 @@
 
     <section id="fullscreen">
         <h1>El pollo loco</h1>
+        <img id="startImg" src="img/9_intro_outro_screens/start/startscreen_1.png" alt="Start Screen">
         <canvas width="720" height="480" id="canvas"></canvas>
     </section>
 
 
-     <button type="button" onclick="changeSondSettings()" id="soundBtn" class="d-none" title="Sound Einstellungen umschalten" aria-label="Sound Einstellungen umschalten">
+    <button type="button" onclick="changeSondSettings()" id="soundBtn" class="d-none"
+        title="Sound Einstellungen umschalten" aria-label="Sound Einstellungen umschalten">
         <img src="./img/icons/soundOff.png" alt="Sound aus" class="soundBtnImg d-none" id="soundOffImg">
         <img src="./img/icons/soundOn.png" alt="Sound an" class="soundBtnImg" id="soundOnImg">
     </button>
@@ -56,8 +58,11 @@
 
     <div class="menu-board" id="menuBoard">
         <h2>Menu</h2>
-        <button type="button" onclick="hideShowContent2('mobileAboutMenu', 'add'), showAboutPanel(), hideShowContentAndMenu()" class="menu-button">📝 Spielregeln</button>
-        <button type="button" onclick="showLevelSelectionFast(), hideShowContentAndMenu()" class="menu-button">🎮 Levelauswahl</button>
+        <button type="button"
+            onclick="hideShowContent2('mobileAboutMenu', 'add'), showAboutPanel(), hideShowContentAndMenu()"
+            class="menu-button">📝 Spielregeln</button>
+        <button type="button" onclick="showLevelSelectionFast(), hideShowContentAndMenu()" class="menu-button">🎮
+            Levelauswahl</button>
     </div>
 
     <div class="button-board" id="buttonBoard">
@@ -68,10 +73,12 @@
             <p>Space-Taste: Pepe springt</p>
             <p>D-Taste: Pepe wirft eine Flasche</p>
         </div>
-        <button type="button" onclick="hideShowContent('buttonBoard', 'add'), adjustButtonBoardFlag('false')" class="menu-button">Verstanden</button>
+        <button type="button" onclick="hideShowContent('buttonBoard', 'add'), adjustButtonBoardFlag('false')"
+            class="menu-button">Verstanden</button>
     </div>
 
-    <div onclick="showMobileAboutMenu(), hideMobileLevelSelectionDiv()" id="mobileAboutMenu" class="mobileAboutMenu d-none">
+    <div onclick="showMobileAboutMenu(), hideMobileLevelSelectionDiv()" id="mobileAboutMenu"
+        class="mobileAboutMenu d-none">
         <svg id="mobileAboutMenuBurgerImg" width="50" height="50" viewBox="0 0 50 50"
             xmlns="http://www.w3.org/2000/svg">
             <rect y="8" width="50" height="8" rx="4" fill="white" />
@@ -89,16 +96,13 @@
     <div id="mobileAboutDiv" class="mobileAboutDiv d-none">
         <div onclick="hideShowContent2('mobileAboutMenu', 'add'), showAboutPanel(), hideShowContentAndMenu()"
             class="mobileAboutDivBtn">Spielregeln</div>
-            <div onclick="showLevelSelectionFast(), hideShowContentAndMenu()" class="mobileAboutDivBtn">Levelauswahl</div>
-        <div class="mobileAboutDivBtn"
-            onclick="hideShowContentAndMenu(), window.open('#')"
-            class="mobileAboutDivBtn">Über uns
-        </div>
+        <div onclick="showLevelSelectionFast(), hideShowContentAndMenu()" class="mobileAboutDivBtn">Levelauswahl</div>
     </div>
 
 
     <div id="mobileMenu" class="mobileMenu d-none">
-        <button type="button" class="symbolBtn" onclick="pauseGame()" id="pauseGameBtnMobile" value="" title="Pause Game">
+        <button type="button" class="symbolBtn" onclick="pauseGame()" id="pauseGameBtnMobile" value=""
+            title="Pause Game">
             <img class="btnSymbol" src="./img/icons/pause-button.png" alt="Pause Game">
         </button>
         <button type="button" class="symbolBtn" onclick="resumeGame()" id="resumeGameBtnMobile" title="Resume Game">
@@ -136,10 +140,13 @@
         <img class="levelselectionCactusLeft" src="img/icons/cactus1.png" alt="cactus left">
         <img class="levelselectionCactusRight" src="img/icons/cactus2.png" alt="cactus right">
         <div id="mobileLevelSelectionDiv" class="mobileLevelSelectionDiv d-none">
-            <div onclick="hideMobileLevelSelectionDiv(), window.location.href = window.location.pathname + '?level=2'" class="mobileAboutDivBtn levelSelectionBtn">Play Level 2</div>
-            <div onclick="hideMobileLevelSelectionDiv(), window.location.href = window.location.pathname + '?level=1'" class="mobileAboutDivBtn levelSelectionBtn">Play Level 1</div>
+            <div onclick="hideMobileLevelSelectionDiv(), window.location.href = window.location.pathname + '?level=2'"
+                class="mobileAboutDivBtn levelSelectionBtn">Play Level 2</div>
+            <div onclick="hideMobileLevelSelectionDiv(), window.location.href = window.location.pathname + '?level=1'"
+                class="mobileAboutDivBtn levelSelectionBtn">Play Level 1</div>
         </div>
-        <div onclick="hideShowContent('outerMobileLevelSelectionDiv', 'add')" class="mobileAboutDivBtn cancelLevelBtn">Cancel</div>
+        <div onclick="hideShowContent('outerMobileLevelSelectionDiv', 'add')" class="mobileAboutDivBtn cancelLevelBtn">
+            Cancel</div>
     </div>
 
 
@@ -182,7 +189,8 @@
             </p>
 
             <div class="rulesBtnDiv">
-                <button type="button" onclick="hideShowContent('regelnDiv', 'add'),  hideShowContent2('mobileAboutMenu', 'remove');"
+                <button type="button"
+                    onclick="hideShowContent('regelnDiv', 'add'),  hideShowContent2('mobileAboutMenu', 'remove');"
                     class="rulesBtn">zurück zum Spiel</button>
             </div>
 

@@ -1,4 +1,4 @@
-const level1 = new Level(
+window.level1 = new Level(
     [
         new Chicken(),
         new Chicken(),

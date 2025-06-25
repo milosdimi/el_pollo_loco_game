@@ -5,15 +5,13 @@ class Chicken extends MovableObject {
     isDead = false;
 
     IMAGES_WALKING = [
-        "img/3_enemies_chicken/chicken_normal/1_walk/1_w.png",
+        "img/3_enemies_chicken/chicken_normal/1_walk/1_w.png", // Passe Pfade an, falls nötig
         "img/3_enemies_chicken/chicken_normal/1_walk/2_w.png",
         "img/3_enemies_chicken/chicken_normal/1_walk/3_w.png",
     ];
     IMAGES_DEAD = [
         "img/3_enemies_chicken/chicken_normal/2_dead/dead.png",
     ];
-
-    // SMALL CHICKEN
     IMAGES_SMALL_WALKING = [
         "img/3_enemies_chicken/chicken_small/1_walk/1_w.png",
         "img/3_enemies_chicken/chicken_small/1_walk/2_w.png",
@@ -38,18 +36,12 @@ class Chicken extends MovableObject {
         const interval = setInterval(() => {
             level.enemies.forEach(enemy => {
                 //  Level
-                if (world?.testIfLevel2 === false) {
-                    this.correctSpeedOfEachChickenLevel1(enemy);
-                    level.enemies[11].x = 5300;
-                    level.enemies[11].speed = 0;
-                    clearInterval(interval);
-
-                    //  Level 2
-                } if (world?.testIfLevel2 === true) {
-                    this.correctSpeedOfEachChickenLevel2(enemy);
-                    level.enemies[21].x = 8300;
-                    level.enemies[21].speed = 0;
-                    clearInterval(interval);
+                if (enemy instanceof Endboss) {
+                    enemy.x = 5300;
+                    enemy.speed = 0;
+                } if (enemy instanceof Endboss) {
+                    enemy.x = 5300;
+                    enemy.speed = 0;
                 }
             });
         }, 200);
@@ -87,9 +79,9 @@ class Chicken extends MovableObject {
         this.height = 60;
         this.y = 360;
         this.loadImage('img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
-        this.loadImage(this.IMAGES_WALKING);
+        this.loadImages(this.IMAGES_WALKING); // Ändern zu loadImages
         this.animate(this.IMAGES_WALKING);
-        this.loadImage(this.IMAGES_DEAD);
+        this.loadImages(this.IMAGES_DEAD); // Ändern zu loadImages
     }
 
     loadPropertiesChickenSmall() {
@@ -98,9 +90,9 @@ class Chicken extends MovableObject {
         this.height = 40;
         this.y = 380;
         this.loadImage('img/3_enemies_chicken/chicken_small/1_walk/1_w.png');
-        this.loadImage(this.IMAGES_SMALL_WALKING);
+        this.loadImages(this.IMAGES_SMALL_WALKING); // Ändern zu loadImages
         this.animate(this.IMAGES_SMALL_WALKING);
-        this.loadImage(this.IMAGES_SMALL_DEAD);
+        this.loadImages(this.IMAGES_SMALL_DEAD); // Ändern zu loadImages
     }
 
     animate(images) {

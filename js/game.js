@@ -1,8 +1,8 @@
-const level = new Level;
+let level;
 let canvas;
 let world;
 let keyboard = new Keyboard();
-let pauseGameBtn = document.getElementById('pauseGameBtn');
+//let pauseGameBtn = document.getElementById('pauseGameBtn');
 let gameStarted = false;  // diese Variable wird benötigt, um, wenn die "pause-game-btns" wieder angezeigt werden sollen, um zu überprüfen, ob das Spiel bereits gestartet wurde, da sie sonst direkt zum Start des Spiels angezeigt werden würden. 
 let gamePaused = false;
 let mobileWindow;
@@ -13,7 +13,6 @@ let deviceWasTurned = false;
 let buttonBoardShown = true;
 
 function init() {
-    shrinkStartImage();
     bindBtnsPressEvents();
     fullScreenMobile();
 
@@ -32,7 +31,7 @@ function startLevel1() {
 }
 
 function startLevel2() {
-    level = level2;
+    level = level2; // Zeile 35
     testIfLevel2 = true;
 }
 
@@ -53,14 +52,9 @@ function hideMobileLevelSelectionDiv() {
     document.getElementById('mobileLevelSelectionDiv').classList.add('d-none');
 }
 
-function shrinkStartImage() {
-    setTimeout(() => {
-        document.getElementById('startGameBtn').classList.remove('d-none');
-    }, 2400);
-}
+
 
 function startGame() {
-    document.getElementById('startImg').classList.add('d-none');
     document.getElementById('startGameBtn').classList.add('d-none');
     document.getElementById('pauseEndGameBtns').classList.remove('d-none');
     document.getElementById('pauseEndGameBtns').classList.add('pause-end-game-btns');
@@ -194,9 +188,9 @@ function restartChicken() {
     });
 }
 
-pauseGameBtn.addEventListener('click', function () {
-    world.gamePaused = true;
-});
+//pauseGameBtn.addEventListener('click', function () {
+//    world.gamePaused = true;
+//});
 
 function fullScreen() {
     let fullScreen = document.getElementById('fullscreen');
@@ -297,12 +291,12 @@ function bindBtnsPressEvents() {
 
     document.getElementById('mobileBtnThrow').addEventListener('touchstart', (event) => {
         event.preventDefault();
-        keyboard.letterD = true;
+        keyboard.D = true;
     });
 
     document.getElementById('mobileBtnThrow').addEventListener('touchend', (event) => {
         event.preventDefault();
-        keyboard.letterD = false;
+        keyboard.D = false;
     });
 }
 
@@ -352,7 +346,7 @@ function initMobileView() {
 
 function initMobileLandscapeView() {
     hideShowContent('pauseEndGameBtns', 'add');
-    hideShowContent('nav', 'add');
+    //hideShowContent('nav', 'add');
     soundBtnMobile();
     document.getElementById('startImg').classList.add('startImgMobileHorizontal');
     document.getElementById('startImg').classList.remove('startImgMobileVertical');
@@ -437,7 +431,7 @@ function initVerticalView() {
     document.getElementById('startImg').classList.add('startImgMobileVertical');
     document.getElementById('startImg').classList.remove('startImgMobileHorizontal');
     document.getElementById('canvas').style.height = 'auto';
-    hideShowContent('nav', 'remove');
+    //hideShowContent('nav', 'remove');
 }
 
 function initGameStartedVerticalView() {
@@ -467,7 +461,7 @@ function fullScreenMobile() {
             document.getElementById('startImg').classList.remove('startImgMobileVertical');
             document.getElementById('canvas').classList.remove('canvasMaxHeight');  //-- beendet Fullscreen wenn keine mobile Ansicht mehr vorliegt
             document.getElementById('canvas').style.height = '480px';    //-- beendet Fullscreen wenn keine mobile Ansicht mehr vorliegt
-            hideShowContent('nav', 'remove');
+            //hideShowContent('nav', 'remove');
         }
     }, 200);
 }

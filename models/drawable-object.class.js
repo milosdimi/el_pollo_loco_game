@@ -8,15 +8,16 @@ class DrawableObject {
     width = 100;
 
     loadImage(path) {
-        this.img = new Image();
-        this.img.src = path;
+        let img = new Image();
+        img.src = path; // Zeile 12
+        return img;
     }
 
-    loadImages(arr) {
-        arr.forEach((path) => {
-            const img = new Image();
+    loadImages(paths) {
+        paths.forEach(path => {
+            let img = new Image();
             img.src = path;
-            this.imageCache[path] = img;
+            this.imageCache[path] = img; // Korrigiert
         });
     }
 
