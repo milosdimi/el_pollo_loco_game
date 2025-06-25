@@ -23,12 +23,12 @@ class Coin extends MovableObject {
         const interval = setInterval(() => {
             level.coins.forEach(coin => {
                 // Level 1
-                if (world?.testIfLevel2 === false) {
+                if (world?.checkIfLevel2 === false) {
                     coin.x = 300 + Math.random() * 5000;
                     clearInterval(interval);
 
                     // Level 2
-                } else if (world?.testIfLevel2 === true) {
+                } else if (world?.checkIfLevel2 === true) {
                     coin.x = 300 + Math.random() * 8000;
                     clearInterval(interval);
                 }

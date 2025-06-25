@@ -7,29 +7,194 @@
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/x-icon" href="./img/icons/chicken.png">
     <title>El pollo loco</title>
+    <script src="models/level.class.js"></script>
     <script src="models/drawable-object.class.js"></script>
     <script src="models/movable-object.class.js"></script>
     <script src="models/character.class.js"></script>
     <script src="models/chicken.class.js"></script>
     <script src="models/cloud.class.js"></script>
+    <script src="models/coins.class.js"></script>
+    <script src="models/screen.class.js"></script>
     <script src="models/status-bar.class.js"></script>
+    <script src="models/status-bar-bottle.class.js"></script>
+    <script src="models/status-bar-coin.class.js"></script>
+    <script src="models/status-bar-score.class.js"></script>
     <script src="models/world.class.js"></script>
     <script src="models/background-object.class.js"></script>
     <script src="models/keyboard.class.js"></script>
-    <script src="models/level.class.js"></script>
+    <script src="models/bottle-on-ground.class.js"></script>
     <script src="models/throwable-object.class.js"></script>
     <script src="models/endboss.class.js"></script>
     <script src="models/collidable-object.class.js"></script>
     <script src="levels/level1.js"></script>
+    <script src="levels/level2.js"></script>
     <script src="js/game.js"></script>
 </head>
 
-<body onload="init()">
+<body onload="init(), testWindowWidth()">
 
     <section id="fullscreen">
         <h1>El pollo loco</h1>
         <canvas width="720" height="480" id="canvas"></canvas>
     </section>
+
+
+     <button type="button" onclick="changeSondSettings()" id="soundBtn" class="d-none" title="Sound Einstellungen umschalten" aria-label="Sound Einstellungen umschalten">
+        <img src="./img/icons/soundOff.png" alt="Sound aus" class="soundBtnImg d-none" id="soundOffImg">
+        <img src="./img/icons/soundOn.png" alt="Sound an" class="soundBtnImg" id="soundOnImg">
+    </button>
+
+    <button type="button" onclick="startGame()" id="startGameBtn" class="btn start-game-btn d-none">Start Game</button>
+
+    <div id="pauseEndGameBtns" class=" d-none">
+        <button type="button" onclick="pauseGame()" id="pauseGameBtn" class="btn">Pause Game</button>
+        <button type="button" onclick="resumeGame()" id="resumeGameBtn" class="btn">Resume Game</button>
+        <button type="button" onclick="fullScreen()" class="btn">Fullscreen</button>
+        <button type="button" onclick="location.reload()" class="btn">Restart Game</button>
+    </div>
+
+
+    <div class="menu-board" id="menuBoard">
+        <h2>Menu</h2>
+        <button type="button" onclick="hideShowContent2('mobileAboutMenu', 'add'), showAboutPanel(), hideShowContentAndMenu()" class="menu-button">📝 Spielregeln</button>
+        <button type="button" onclick="showLevelSelectionFast(), hideShowContentAndMenu()" class="menu-button">🎮 Levelauswahl</button>
+    </div>
+
+    <div class="button-board" id="buttonBoard">
+        <h2>Tastenbelegung</h2>
+        <div>
+            <p>Pfeil nach rechts: Pepe läuft nach rechts</p>
+            <p>Pfeil nach links: Pepe läuft nach links</p>
+            <p>Space-Taste: Pepe springt</p>
+            <p>D-Taste: Pepe wirft eine Flasche</p>
+        </div>
+        <button type="button" onclick="hideShowContent('buttonBoard', 'add'), adjustButtonBoardFlag('false')" class="menu-button">Verstanden</button>
+    </div>
+
+    <div onclick="showMobileAboutMenu(), hideMobileLevelSelectionDiv()" id="mobileAboutMenu" class="mobileAboutMenu d-none">
+        <svg id="mobileAboutMenuBurgerImg" width="50" height="50" viewBox="0 0 50 50"
+            xmlns="http://www.w3.org/2000/svg">
+            <rect y="8" width="50" height="8" rx="4" fill="white" />
+            <rect y="21" width="50" height="8" rx="4" fill="white" />
+            <rect y="34" width="50" height="8" rx="4" fill="white" />
+        </svg>
+
+        <svg id="mobileAboutMenuXImg" class="mobileAboutMenuXImg d-none" width="50" height="50" viewBox="0 0 50 50"
+            xmlns="http://www.w3.org/2000/svg">
+            <line x1="10" y1="10" x2="40" y2="40" stroke="white" stroke-width="8" stroke-linecap="round" />
+            <line x1="40" y1="10" x2="10" y2="40" stroke="white" stroke-width="8" stroke-linecap="round" />
+        </svg>
+    </div>
+
+    <div id="mobileAboutDiv" class="mobileAboutDiv d-none">
+        <div onclick="hideShowContent2('mobileAboutMenu', 'add'), showAboutPanel(), hideShowContentAndMenu()"
+            class="mobileAboutDivBtn">Spielregeln</div>
+            <div onclick="showLevelSelectionFast(), hideShowContentAndMenu()" class="mobileAboutDivBtn">Levelauswahl</div>
+        <div class="mobileAboutDivBtn"
+            onclick="hideShowContentAndMenu(), window.open('#')"
+            class="mobileAboutDivBtn">Über uns
+        </div>
+    </div>
+
+
+    <div id="mobileMenu" class="mobileMenu d-none">
+        <button type="button" class="symbolBtn" onclick="pauseGame()" id="pauseGameBtnMobile" value="" title="Pause Game">
+            <img class="btnSymbol" src="./img/icons/pause-button.png" alt="Pause Game">
+        </button>
+        <button type="button" class="symbolBtn" onclick="resumeGame()" id="resumeGameBtnMobile" title="Resume Game">
+            <img class="btnSymbol" src="./img/icons/play-buttton.png" alt="Play Game">
+        </button>
+        <button type="button" class="symbolBtn" onclick="showLevelSelection()" title="Levelauswahl öffnen">
+            <img class="btnSymbol" src="./img/icons/reload.png" alt="Reload">
+        </button>
+    </div>
+
+
+    <!-- Mobile control buttons -->
+    <div id="mobileCtrlBtnDiv1" class="mobileCtrlBtnDiv1 d-none">
+        <button type="button" class="mobileBtn" id="mobileBtnJump">
+            <img class="mobileBtnImg" src="img/icons/arrow-up.png" alt="UP">
+        </button>
+        <button type="button" class="mobileBtn" id="mobileBtnThrow">
+            <img class="mobileBtnImgFadenkreuz" src="img/icons/molotov-cocktail.png" alt="Fire">
+        </button>
+    </div>
+    <div id="mobileCtrlBtnDiv2" class="mobileCtrlBtnDiv2 d-none">
+        <button type="button" class="mobileBtn" id="mobileBtnLeft">
+            <img class="mobileBtnImg" src="img/icons/left-arrow-outline.png" alt="Left">
+        </button>
+        <button type="button" class="mobileBtn" id="mobileBtnRight">
+            <img class="mobileBtnImg" src="img/icons/right-arrow.png" alt="Right">
+        </button>
+    </div>
+
+    <div class="turnDeviceTxtDiv d-none" id="turnDeviceTxtDiv">
+        <h3>Please turn Your device to play...</h3>
+    </div>
+
+    <div id="outerMobileLevelSelectionDiv" class="outerMobileLevelSelectionDiv d-none">
+        <img class="levelselectionCactusLeft" src="img/icons/cactus1.png" alt="cactus left">
+        <img class="levelselectionCactusRight" src="img/icons/cactus2.png" alt="cactus right">
+        <div id="mobileLevelSelectionDiv" class="mobileLevelSelectionDiv d-none">
+            <div onclick="hideMobileLevelSelectionDiv(), window.location.href = window.location.pathname + '?level=2'" class="mobileAboutDivBtn levelSelectionBtn">Play Level 2</div>
+            <div onclick="hideMobileLevelSelectionDiv(), window.location.href = window.location.pathname + '?level=1'" class="mobileAboutDivBtn levelSelectionBtn">Play Level 1</div>
+        </div>
+        <div onclick="hideShowContent('outerMobileLevelSelectionDiv', 'add')" class="mobileAboutDivBtn cancelLevelBtn">Cancel</div>
+    </div>
+
+
+
+    <div id="regelnDiv" class="regelnDiv d-none">
+        <div class="milkyOverlay"></div>
+        <h3>Spielregeln:</h3>
+
+        <img class="rulesImg" src="img/icons/employment-rules.png" alt="Rules">
+
+        <div class="rulesDiv">
+            <h4>Ziel des Spiels</h4>
+            <p>
+                Der brave mexikanische agricultor (Landwirt) Pepe muss um sein Leben fürchten, da das mutierte Oberhuhn
+                Maria-Carmen
+                ihm als Vergeltung für die jahrelange Fütterung mit minderwertigem Futter nach dem Leben Trachtet. Dazu
+                mobilisiert sie all die
+                großen und kleinen Hühner
+                aus ihrem Hühnerhaufen. <br>
+                Hilf Pepe, dem wild gewordenen Oberhuhn zuvorzukommen, indem Du es mit eingesammelten Salsa-Flaschen
+                abwirfst und
+                eliminierst. Doch vorsicht: Maria-Carmen hat viele Leben, und wurde sie erst einmal von der scharfen
+                Salsa-Sauce getroffen,
+                wird sie rasend vor Wut! <br>
+                Nimm dich auch vor den anderen hühnern aus Maria-Carmens Hühnerhaufen in acht. Auch sie sind gefährlich
+                und wollen Dich picken!
+                Auch gegen sie kannst Du Dich wehren, indem Du sie mit den eingesammelten Salsa-Flaschen abwirfst oder
+                sie von oben wie eine Pizza-Mexicana platthüpfst!
+                <br>
+                Vergiss auch nicht, die umherliegenden Münzen einzusammeln, denn am Ende des Kampfes wird alles so
+                zerstört sein, dass Du
+                mehr als nur ein paar neue Hühner kaufen musst.
+            </p>
+
+            <h4>Tastenbelegung:</h4>
+            <p>
+                Bewege Pepe mit den beiden <b>Pfeiltasten</b> in die gewünschte Richtung. <br>
+                Wenn Pepe springen soll, drücke die <b>C-Taste</b>. Um Salsa-Flaschen zu werfen, drücke die
+                <b>D-Taste</b>.
+            </p>
+
+            <div class="rulesBtnDiv">
+                <button type="button" onclick="hideShowContent('regelnDiv', 'add'),  hideShowContent2('mobileAboutMenu', 'remove');"
+                    class="rulesBtn">zurück zum Spiel</button>
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <div id="greyBgrDiv" class="greyBgrDiv d-none"></div>
+
 
 </body>
 

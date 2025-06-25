@@ -1,4 +1,4 @@
-let level;
+const level = new Level;
 let canvas;
 let world;
 let keyboard = new Keyboard();
@@ -23,11 +23,11 @@ function init() {
     if (level === '2') {
         startLevel2();
     } else {
-        initLevel1();
+        startLevel1();
     }
 }
 
-function initLevel1() {
+function startLevel1() {
     level = level1;
 }
 
