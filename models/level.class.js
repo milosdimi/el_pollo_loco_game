@@ -2,11 +2,18 @@ class Level {
     enemies;
     clouds;
     backgroundObject;
-    level_end_x = 2200; // The x position where the level ends
+    bottleOnFloor;
+    coins;
+    collectedBottles;
 
-    constructor(enemies, clouds, backgroundObject) {
+    level_end_x = 5200; // The x position where the level ends
+
+    constructor(enemies, clouds, backgroundObject, bottleOnFloor, coins, collectedBottles) {
         this.enemies = enemies;
         this.clouds = clouds;
         this.backgroundObject = backgroundObject;
+        this.bottleOnFloor = bottleOnFloor;
+        this.coins = coins;
+        this.collectedBottles = collectedBottles;
     }
 }
